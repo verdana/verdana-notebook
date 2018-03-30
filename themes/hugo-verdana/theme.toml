@@ -1,0 +1,13 @@
+name        = "hugo-verdana"
+license     = "MIT"
+licenselink = ""
+description = "A personal, minimal blog theme for Hugo."
+homepage    = "http://phpvim.net"
+tags        = ["blog", "personal", "minimal", "microblog", "photoblog", "linkblog", "responsive"]
+features    = ["Microblog", "Photoblog", "Blog", "Personal Blog", "Link Blog", "Responsive"]
+min_version = 0.10
+
+[author]
+    name     = "Verdana Mu"
+    homepage = "http://phpvim.net"
+

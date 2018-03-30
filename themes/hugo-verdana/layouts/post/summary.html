@@ -1,0 +1,18 @@
+<article class="post-entry">
+    <header class="post-header">
+        <h3>
+            <a href="{{ .Permalink }}">
+                {{ if .Draft }} <i>{{ .Title }} - Draft</i> {{ else }} {{ .Title }} {{ end }}
+            </a>
+        </h3>
+        <p class="post-meta">
+            @{{ if isset .Params "author" }}{{ .Params.author }}{{ else }}{{ .Site.Params.author }}{{ end }} · {{ .Date.Format "Jan 2, 2006" }} · {{ .ReadingTime }} min read
+        </p>
+    </header>
+    <div class="post-summary"> {{ .Summary | plainify | htmlUnescape }} </div>
+    <footer class="post-footer">
+        {{ if .Truncated }}
+        <a class="read-more" href="{{ .RelPermalink }}">继续阅读 →</a>
+        {{ end }}
+    </footer>
+</article>
