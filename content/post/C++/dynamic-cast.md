@@ -1,5 +1,5 @@
 ---
-title: "C++ TUTORIAL - DYNAMIC CAST"
+title: "C++ dynamic cast"
 tags: ["C++"]
 date: 2018-03-20
 ---
@@ -11,15 +11,15 @@ RTTI 全称运行时类型信息（Run-time Type Identification）。
 
 RTTI 提供了一个标准的方法用来检测运行时对象的类型。
 
-In other words, RTTI allows programs that use pointers or references to base classes to retrieve the actual derived types of the objects to which these pointers or references refer.
+换句话说，RTTI（运行时类型识别）允许“用指向基类的指针或引用来操纵对象”的程序能够获取到“这些指针或引用所指对象”的实际派生类型。
 
-RTTI 通过两种运算符来实现：
+RTTI 通过两种操作符来实现：
 
-1. typeid        返回指针或引用所绑定的对象的实际类型
+1. typeid        返回指针或引用所指向的对象的实际派生类型
 2. dynamic_cast  将基类指针或引用安全地转换为派生类的指针或引用
 <!--more-->
 
-## The dynamic_cast Operator
+## dynamic_cast
 
 尝试将一个对象转换成类型更具体的对象。
 
@@ -61,13 +61,17 @@ int main()
 }
 ```
 
-The dynamic_cast operator is intended to be the most heavily used RTTI component. It doesn't give us what type of object a pointer points to. Instead, it answers the question of whether we can safely assign the address of an object to a pointer of a particular type.
+dynamic_cast 在 RTTI 组件中使用最为频繁。它无法告诉我们指针对象的确切类型，但是却可以让我们判断是否可以将一个对象的地址安全的赋值给一个特殊类型的指针。
 
-Unlike other casts, a dynamic_cast involves a run-time type check. If the object bound to the pointer is not an object of the target type, it fails and the value is 0. If it's a reference type when it fails, then an exception of type bad_cast is thrown. So, if we want dynamic_cast to throw an exception (bad_cast) instead of returning 0, cast to a reference instead of to a pointer. Note also that the dynamic_cast is the only cast that relies on run-time checking.
+与其它类型转换不同的是，dynamic_cast 涉及运行时类型检查。 如果绑定到指针的对象不是目标类型的对象，则它会失败并且值为0.如果它在失败时是引用类型，则会抛出 bad_cast 异常。 所以，如果我们想让 dynamic_cast 抛出一个异常而不是返回 0，那么将其转换为引用而不是指针。 还要注意，dynamic_cast 是唯一依赖运行时检查的强制转换。
 
-"The need for dynamic_cast generally arises because you want to perform derived class operation on a derived class object, but you have only a pointer or reference-to-base" said Scott Meyers in his book "Effective C++".
+Scott Meyers 在其着作“Effective C ++”中提到过：
 
-Let's look at the example code:
+> The need for dynamic_cast generally arises because you want to perform derived class operation on a derived class object, but you have only a pointer or reference-to-base
+
+> 对 dynamic_cast 的需求通常是因为你想对派生类对象执行派生类操作，但你只有一个指向基类的指针或者引用。
+
+请看下面的示例代码：
 
 ```cpp
 class Base {};
@@ -134,20 +138,21 @@ int main()
 }
 ```
 
-The example has two dynamic casts from pointers of type Base to a point of type Derived. But only the #1 is successful.
+该示例具有两个从 Base 类型的指针到 Derived 类型的指针的动态强制类型转换。 但只有 ＃1 会成功。
 
-Even though pBDerived and pBBase are pointers of type Base*, pBDerived points to an object of type Derived, while pBBase points to an object of type Base. Thus, when their respective type-castings are performed using dynamic_cast, pBDerived is pointing to a full object of class Derived, whereas pBBase is pointing to an object of class Base, which is an incomplete object of class Derived.
+尽管 pBDerive d和 pBBase 是 Base * 类型的指针，但 pBDerived 指向 Derived 类型的对象，而 pBBase 指向 Base 类型的对象。
 
-In general, the expression
+因此，当使用 dynamic_cast 执行相应的类型转换时，pBDerived 指向类 Derived 的完整对象，而 pBBase 指向 Base类的对象，该类是 Derived 类的不完整对象。
+
 
 ```cpp
 dynamic_cast<Type *>(ptr)
 ```
 
-converts the pointer ptr to a pointer of type Type* if the pointer-to object (*ptr) is of type Type or else derived directly or indirectly from type Type. Otherwise, the expression evaluates to 0, the null pointer.
+通常，如果指针对象 ptr 的类型为 Type 或者直接或间接从 Type 类型派生，则上述表达式将指针 ptr 转换为 Type* 类型的指针。 否则，表达式的计算结果为 0，成为空指针。
 
 
-## Dynamic_cast - example
+## dynamic_cast - 例子
 
 下面的额代码中，有个 main() 函数不工作，是哪个呢？
 
@@ -210,9 +215,9 @@ int main()
 答案是 (2)，这是个向下转型（downcast）。
 
 
-## Dynamic_cast - another example
+## dynamic_cast - 其他例子
 
-In this example, the DoSomething(Window* w) is passed down Window pointer. It calls scroll() method which is only available from Scroll object. So, in this case, we need to check if the object is the Scroll type or not before the call to the scroll() method.
+在这个例子中，DoSomething(Window* w) 传入 Windows 指针，它调用了只能从 Scroll 对象中获得的 scroll() 方法。因此，在这种情况下，我们需要在调用 scroll() 方法之前检查对象是否为 Scroll 类型。
 
 ```cpp
 #include <iostream>
@@ -264,17 +269,19 @@ int main()
 }
 ```
 
-## Upcasting and Downcasting
+## 向上转型和向下转型
 
-Converting a derived-class reference or pointer to a base-class reference or pointer is called upcasting. It is always allowed for public inheritance without the need for an explicit type cast.
+将派生类引用或指针转换为基类引用或指针称为向上转型。 它始终允许公共继承，而不需要明确的类型转换。
 
-Actually this rule is part of expressing the is-a relationship. A Derived object is a Base object in that it inherits all the data members and member functions of a Base object. Thus, anything that we can do to a Base object, we can do to a Derived class object.
+其实这条规则是表达 is-a 关系的一部分。 派生对象是一个 Base 对象，它继承了 Base 对象的所有数据成员和成员函数。
 
-The downcasting, the opposite of upcasting, is a process converting a base-class pointer or reference to a derived-class pointer or reference.
+因此，任何我们可以对 Base 对象做的事情，也可以对它的派生类对象做同样的操作。
 
-It is not allowed without an explicit type cast. That's because a derived class could add new data members, and the class member functions that used these data members wouldn't apply to the base class.
+向下转换，与向上转换相反，是一个将基类指针或引用转换为派生类指针或引用的过程。
 
-Here is a self explanatory example
+没有明确类型的转换是不允许的。这是因为派生类可能会添加新的数据成员，并且使用这些数据成员的类成员函数将不适用于基类。
+
+以下是例子：
 
 ```cpp
 #include <iostream>
@@ -312,7 +319,7 @@ int main()
 
     // Downcasting: unsafe - Employee does not have
     // the method, coding().
-       // compile error: 'coding' : is not a member of 'Employee'
+    // compile error: 'coding' : is not a member of 'Employee'
     // pEmp->coding();
     pProg->coding();
 
@@ -320,14 +327,13 @@ int main()
 }
 ```
 
-## The typeid
+## typeid
 
 typeid 能让我们检测两个对象是否相同。
 
-In the previous example for Upcasting and Downcasting, employee gets the method coding() which is not desirable.
-So, we need to check if a pointer is pointing to the Programmer object before we use the method, coding().
+在前面的转型的示例中，Employee 调用了不应该得到的方法 coding()。因此，在我们使用方法 coding() 之前，我们需要检查指针是否指向 Programmer 对象。
 
-Here is a new code showing how to use typeid:
+以下是显示如何使用typeid的新代码：
 
 ```cpp
 class Employee {
@@ -369,9 +375,9 @@ int main()
 }
 ```
 
-So, only a programmer uses the coding() method.
+所以，只有 Programmer 使用了 coding() 方法。
 
-Note that we included <typeinfo> in the example. The typeid operator returns a reference to a type_info object, where type_info is a class defined in the typeinfo header file.
+要注意的是，我们在示例中包含了<typeinfo>。 typeid 运算符返回对 type_info 对象的引用，其中 type_info 是 typeinfo 头文件中定义的类。
 
 
 ### 原文来源

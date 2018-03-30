@@ -5,15 +5,15 @@ date: 2018-03-29
 ---
 
 
-I occasionally give free Go consults and code review on top of my daily work. As such, I tend to read a lot of other peoples’ codes. And while this is really more of a feeling *, I’ve seen an increase in what I call “Java-style” interface usage.
+我偶尔会在我的日常工作上免费进行咨询和代码审查。因此，我倾向于阅读很多其他人的代码。虽然这很可能是错觉，但我真的看到了很多我称之为 Java 风格的接口用法。
 
-This blog post is a Go specific recommendation from me, based on my experiences writing Go code, on how to use interfaces well.
+这篇博文是 Go 的具体建议，基于我写Go代码的经验，以及如何很好地使用接口。
 
 For this blog post, the running example will span two packages: animal and circus. A lot of what I write about here is about code at the boundary of packages.
 
-## 不要这么做
+## 别这么干
 
-A very common thing I see people do is this:
+我看到很多人的接口是这样用的：
 
 ```go
 package animals
@@ -35,24 +35,23 @@ import "animals"
 func Perform(a animal.Animal) string { return a.Speaks() }
 ```
 
+这就是所谓的 Java 风格的接口用法。通常步骤是这样的：
 
-This is the so-called “Java-style” interface usage. The steps are as such:
+1. 定义一个接口
+2. 定义一个匹配这个接口的类型（如：Dog 结构体）
+3. 定义满足接口实现的方法
 
-1. Define an interface
-2. Define one type that fulfils the interface
-3. Define the methods that satisfies implementation of the interface.
+我将这个概括为“编写类型以实现接口”。这种代码味道的人为因素很明显：
 
-I would summarize this as “writing types to fulfil interfaces”. The artefacts of such a code smell is clear:
-
-* The most obvious of which is that it has only one type that fulfils the interface with no obvious means of extension.
-* Functions typically take concrete types instead of interface types.
+* 其中最明显的是它只有一种类型可以实现接口，而没有明显的扩展手段。
+* 函数通常采用具体的类型而不是接口类型。
 
 
 ## 正确的做法
 
-Go interfaces encourages one to be lazy, and this is a good thing. Instead of writing types to fulfil interfaces, write interfaces to fulfil usage requirements.
+Go 接口鼓励人们懒惰，这是一件好事，而不是编写类型来完成接口，编写接口来满足使用需求。
 
-What I mean is this - instead of defining Animal in package animals, define it at point of use - in package circus.
+我的意思是这个 - 不是在 animals package 中定义 Animal，而是在 package circus 的使用点上定义它。
 
 ```go
 package animals
@@ -71,14 +70,12 @@ type Speaker interface {
 func Perform(a Speaker) string { return a.Speaks() }
 ```
 
+更舒适的方式是：
 
-The more idiomatic way would be this:
+1. 定义类型
+2. 在使用点定义接口
 
-1. Define the types
-2. Define the interface at point of use.
-
-This way shows a reduced dependency on the components of package animals. Reduced dependencies is how you build robust software.
-
+这种方式明显降低了对 package animals 的依赖。
 
 ## 伯斯塔尔法则
 
@@ -86,53 +83,55 @@ This way shows a reduced dependency on the components of package animals. Reduce
 
 通常的说法是这样的：
 
-> “Be conservative with what you do, be liberal with you accept”
+> Be conservative with what you do, be liberal with you accept
 
 如果翻译到 Go 语言的语境中：
 
-> “Accept interfaces, return structs”
+> Accept interfaces, return structs
 
-By and large, this is a very good maxim on designing things to be robust*. The main unit of code in Go is a function. The pattern to follow when designing functions/methods is the following:
+Go 中的主要代码单元是函数，设计函数/方法时应当遵循的以下的模式：
 
 ```go
 func funcName(a INTERFACETYPE) CONCRETETYPE
 ```
 
-Here we see we accept anything that implements an interface - could be any interface, or a blank one, and return a value that is a concrete value. Of course, there is value in constraining what a can be. As it goes in the Go proverbs,
+这里我们看到我们接受任何实现接口的东西 - 可以是任何接口或空白接口，并返回一个具体值。
 
-> “the empty interface says nothing“ - Rob Pike
+当然，限制参数 a 的具体类型是很有必要的，最好不要在函数中传入空白接口 interface{}，没有意义。
 
-So it’s preferable not to have functions take interface{}.
+> the empty interface says nothing - Rob Pike
 
 
 ## 使用案例：Mocking
 
-An excellent demonstration of the usefulness of the Postel’s Law maxim is in the case of testing. If you have a function that looks like this:
+伯斯塔尔法则的有用性的一个很好的例证就是在测试的环境中下，比如你有一个类似下面的函数：
 
 ```go
 func Takes(db Database) error
 ```
 
-If Database is an interface then in testing code, you can just provide a mock implementation of Database without having to pass in a real database object.
+如果 Database 是一个接口，然后在测试代码中，您可以提供一个 Database 的模拟实现，而不必传入实际的数据库对象。
 
 
-## When Is It Acceptable To Define An Interface Upfront
+## 什么时候可以接受预先定义接口
 
-Truth be told, programming is pretty free form - there’s no real hard and fast rules. You can of course define an interface upfront. No correctness police is going to show up and arrest you. In the context of multiple packages, if you know your functions are going take a certain interface within the package then by all means do that.
+老实说，编程的形式是非常自由的 - 没有任何的硬性规定。你当然可以预先定义一个接口。在多个 package 的情况下，如果你知道你的函数正在使用包中的某个接口，那么通过一切手段来做到这一点。
 
-Defining an interface upfront is usually a code smell for overengineering. But there are clearly situations where you need define an interface upfront. I can think of several:
+预定义接口通常有点过度工程的意味。但是在很多状况下你很明显是需要预先接口的，我可以想到的是：
 
 * 封闭接口
 * 抽象数据类型
 * 递归接口
 
-Here I shall briefly visit each.
+在这里我将简要介绍一下。
 
 ## 封闭接口
 
 Sealed interfaces can only be discussed in the context of having multiple packages. A sealed interface is an interface with unexported methods. This means users outside the package is unable to create types that fulfil the interface. This is useful for emulating a sum type as an exhaustive search for the types that fulfil the interface can be done.
 
-So what you’d define something like this:
+封闭接口只能在具有 package 的环境中讨论。封闭接口指的是没有导出任何方法的接口。这意味着 package 外部的用户无法创建满足界面的类型。这对于模拟总和类型非常有用，因为它可以完成可以完成接口的类型的详尽搜索。
+
+所以你要定义这样的东西：
 
 ```go
 type Fooer interface {
