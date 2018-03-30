@@ -1,8 +1,8 @@
 <header class="u-cf topinfo">
-    <code>@{{ .Site.Params.author }}</code>
+    <code><a href="/">@{{ .Site.Params.author }}</a></code>
     {{ if $.Page.Params.LastMod }}
     <code><span class="post-lastmod">{{ dateFormat ( or $.Site.Params.dateFormat "2006, Jan 02" ) $.Page.Params.LastMod }}</span></code>
     {{ end }}
-    <code><span>Blogs </span><span class="article-characters">999</span></code>
-    <code><span>Views </span><span class="article-read">999</span></code>
+    <code><span>Blogs </span><span class="post-count">{{ len (where .Site.Pages "Section" "post") }}</span></code>
+    <code><span>Views </span><span class="post-views">999</span></code>
 </header>

@@ -21,6 +21,8 @@
                 {{ if .Site.Copyright }}{{ .Site.Copyright | safeHTML }}{{ end }}
             </p>
         </footer>
+
+        {{ if .Site.DisqusShortname }}{{ template "_internal/disqus.html" . }}{{ end }}
     </div>
 
 {{ partial "footer.html" . }}

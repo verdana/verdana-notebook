@@ -76,6 +76,10 @@ code {
     line-height: 25px;
     padding: 0 20px;
 }
+.topinfo code a {
+    color: #2C3E50;
+    text-decoration: none;
+}
 
 .posts {
     font-size: 16px;
