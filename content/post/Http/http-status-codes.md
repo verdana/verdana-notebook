@@ -1,6 +1,7 @@
 ---
 title: "HTTP 状态码"
 tags: ["http", "web"]
+categories: ["Http"]
 date: 2018-03-10
 ---
 

@@ -63,6 +63,10 @@ code {
     white-space: nowrap;
 }
 
+th, td {
+    text-align: unset;
+}
+
 .topinfo {
     margin: 40px auto;
     font-size: 16px;

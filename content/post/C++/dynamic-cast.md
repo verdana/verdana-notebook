@@ -1,6 +1,7 @@
 ---
 title: "C++ dynamic cast"
 tags: ["C++"]
+categories: ["C++"]
 date: 2018-03-20
 ---
 

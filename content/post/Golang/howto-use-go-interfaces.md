@@ -1,6 +1,7 @@
 ---
 title: "如何使用 Golang 的 Interface"
 tags: ["Golang"]
+categories: ["Golang"]
 date: 2018-03-29
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: "PHP 7.1 的新特性"
 tags: ["PHP"]
+categories: ["PHP"]
 date: 2018-03-31
 ---
 
