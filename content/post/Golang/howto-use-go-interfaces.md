@@ -9,9 +9,8 @@ date: 2018-03-29
 
 这篇博文是 Go 的具体建议，基于我写Go代码的经验，以及如何很好地使用接口。
 
-For this blog post, the running example will span two packages: animal and circus. A lot of what I write about here is about code at the boundary of packages.
 
-## 别这么干
+## 不要这样做
 
 我看到很多人的接口是这样用的：
 
@@ -129,8 +128,6 @@ func Takes(db Database) error
 
 Sealed interfaces can only be discussed in the context of having multiple packages. A sealed interface is an interface with unexported methods. This means users outside the package is unable to create types that fulfil the interface. This is useful for emulating a sum type as an exhaustive search for the types that fulfil the interface can be done.
 
-封闭接口只能在具有 package 的环境中讨论。封闭接口指的是没有导出任何方法的接口。这意味着 package 外部的用户无法创建满足界面的类型。这对于模拟总和类型非常有用，因为它可以完成可以完成接口的类型的详尽搜索。
-
 所以你要定义这样的东西：
 
 ```go
@@ -140,16 +137,16 @@ type Fooer interface {
 }
 ```
 
-Only the package that defined Fooer can use and create any valid value of Fooer. This allows for exhaustive type switches to be done.
+只有定义了 Fooer 的包才能使用并创建任何有效的 Fooer 值，这允许实现彻底的类型切换。
 
-A sealed interface also allows for analysis tools to easily pick up any non-exhaustive pattern match. In fact BurntSushi’s [sumtypes](https://github.com/BurntSushi/go-sumtype) package does just that for you.
+一个密封的接口也允许分析工具轻松地获取任何非穷举的模式匹配，请看 BurntSushi’s [sumtypes](https://github.com/BurntSushi/go-sumtype)。
 
 
 ## 抽象数据类型
 
-The other use of defining an interface upfront is to create a abstract data type. It may or may not be sealed.
+定义接口的另一个用途是创建一个抽象数据类型，无所谓是否被密封（sealed）。
 
-The sort package that comes in the standard library is a good example of this. It defines a sortable collection as
+标准库中的排序包就是一个很好的例子，它定义了一个可排序的集合：
 
 ```go
 type Interface interface {
@@ -163,16 +160,16 @@ type Interface interface {
 }
 ```
 
-Now this has made a lot of people upset - because if you want to use the sort package you’d have to implement the methods for the interface, and people for the most part are upset about having to type three extra lines.
+现在这已经让很多人感到不爽了 - 因为如果你想使用排序包，你必须自己实现接口的方法。
 
-However in my opinion this is a very elegant form of generics in Go. It should be encouraged more.
+但在我看来，这是Go中非常优雅的范式，应该鼓励这么做。
 
-The alternative design that is elegant would require higher-kinded types. We shan’t go there in this blog post.
+另一种方式是使用更高阶的类型来实现优雅的设计，这里就不做讨论了。
 
 
 ## 递归接口
 
-This is probably another code smell, but there are times which are unavoidable, you perform something within a monad and end up with an interface that looks like this:
+这可能是另一种形式的代码，但是有时候不太容易避免，你在 monad 中执行某些操作，最终得到的接口如下所示：
 
 ```go
 type Fooer interface {
@@ -180,20 +177,23 @@ type Fooer interface {
 }
 ```
 
-The recursive interface pattern would require the interface be defined upfront, clearly. The guideline of defining an interface at the point of use is inapplicable here.
+递归接口模式需要清晰地预先定义接口，在此使用点定义接口的准则不太适用。
 
-This pattern is useful for creating contexts to operate in. Context-heavy code are usually self-contained within a package, with only the contexts exported (alá the tensor package), so I don’t actually see a lot of this. I’ve quite a bit more to say about contextual patterns, but I’ll leave that to another blog post.
-
+这种模式对于创建上下文来操作是非常有用的。上下文密集的代码通常是自包含在一个包中，只有上下文导出，实际上我见的不多。
 
 ## 结论
 
-Even though I have a section titled “Don’t Do This”, the purpose of this post is not meant to be proscriptive. Rather, I want to encourage people to think at the boundary conditions - that’s where all the edge cases happen.
+尽管我有一个标题为“不要这样做”的部分，但这篇文章的目的并不意味着具有前瞻性。相反，我想鼓励人们在边界条件下思考 - 就是所有边缘案例发生的场景。
 
-I personally found the declare-at-point-of-use pattern extremely useful. As a result I don’t particularly run into issues that I’ve observed a number of people have run into.
+我个人发现使用点声明模式非常有用，因此，我很少遇到我前面讨论过的这些问题。
 
-I however also run into cases where I end up accidentally writing Java style interfaces - typically after I come back from a stint of writing code in Python or Java. The desire to overengineer and “class all the things” something is quite strong especially when writing Go code after writing a lot of object oriented code.
+但是，我也遇到过最终需要编写Java风格接口的情况 - 通常是在我用Python或Java编写代码的时候。 在编写大量面向对象的代码后再编写Go代码时，过度编程和“对所有事物进行分类”的愿望非常强烈。
 
-Hence this post also serves as a self-reminder on what the path to pain-free code looks like. Tell me what you think!
+因此这篇文章也可以作为一个自我提醒，告诉我们如何写出无痛的代码。
 
-Thanks to [Stratos Neiros](https://twitter.com/nstratos) for reviewing an earlier version of this article. And to Riteek Srivastava for picking out some bugs in the example code.
+感谢 [Stratos Neiros](https://twitter.com/nstratos) 审核这篇文章，同时也感谢 Riteek Srivastava 指出示例代码中的错误。
 
+
+### 原文来源
+
+<a id="ref01">[How To Use Go Interfaces](https://blog.chewxy.com/2018/03/18/golang-interfaces/)</a>

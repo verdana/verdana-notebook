@@ -8,7 +8,7 @@ body,
 button,
 input,
 select {
-    font-family: PingFang SC, Hiragino Sans GB, Microsoft Yahei, WenQuanYi Micro Hei, sans-serif;
+    font-family: "XHei Intel", "Hiragino Sans GB", "Microsoft Yahei", "WenQuanYi Micro Hei", sans-serif;
 }
 
 a {
@@ -58,8 +58,8 @@ code {
     border-radius: 4px;
     border: 0;
     color: #2C3E50;
-    font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
-    font-size: 13px;
+    font-family: "Envy Code R", Consolas, Monaco, Menlo, "Courier New", monospace;
+    font-size: 14px;
     white-space: nowrap;
 }
 

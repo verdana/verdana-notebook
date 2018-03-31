@@ -9,6 +9,7 @@ publishDir         = "public"
 
 # Code syntax highlight
 pygmentsCodefences = true
+pygmentsOptions    = "startinline=true"
 pygmentsStyle      = "tango"
 
 # Disqus Username
