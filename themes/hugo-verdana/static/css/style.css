@@ -63,6 +63,10 @@ code {
     white-space: nowrap;
 }
 
+pre > code {
+    white-space: pre-wrap;
+}
+
 th, td {
     text-align: unset;
 }
@@ -131,14 +135,28 @@ th, td {
     font-size: 13px;
 }
 
+.post-content p img {
+    max-width: 100%;
+    height: auto;
+}
+
+.post-copyright {
+    font-size: 13px;
+}
+
 /* Larger than mobile */
 
-@media (min-width: 400px) {}
+@media (min-width: 400px) {
+}
 
 
 /* Larger than phablet (also point when grid becomes active) */
 
-@media (min-width: 550px) {}
+@media (min-width: 550px) {
+    .container {
+        width: 90%;
+    }
+}
 
 
 /* Larger than tablet */
